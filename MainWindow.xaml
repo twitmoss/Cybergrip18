@@ -1,0 +1,857 @@
+﻿<Window x:Class="CyberGrip.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CyberGrip 18 Controller" Height="720" Width="1080"
+        Background="#121214" Foreground="#E0E0E0"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Loaded="Window_Loaded"
+        SizeChanged="MainWindow_SizeChanged">
+
+    <Window.Resources>
+        <!-- Modern Cyberpunk Keycap Styling -->
+        <Style TargetType="Button" x:Key="KeyCapStyle">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="#1E1E24"/>
+            <Setter Property="Foreground" Value="#00E5FF"/>
+            <Setter Property="BorderBrush" Value="#2D2D38"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6" Padding="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2A2A36"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#00E5FF"/>
+                                <Setter Property="Foreground" Value="#121214"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Joystick Button Style -->
+        <Style TargetType="Button" x:Key="JoystickStyle" BasedOn="{StaticResource KeyCapStyle}">
+            <Setter Property="Background" Value="#2B1A3A"/>
+            <Setter Property="Foreground" Value="#FF4081"/>
+            <Setter Property="BorderBrush" Value="#7C4DFF"/>
+        </Style>
+
+        <!-- Window Control Button Style (Minimize) -->
+        <Style TargetType="Button" x:Key="WinButtonStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#888899"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2A2A36"/>
+                                <Setter Property="Foreground" Value="#00E5FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Close Button Style with Red Hover Effect -->
+        <Style TargetType="Button" x:Key="CloseButtonStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#888899"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E81123"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Toggle Button Style for Console -->
+        <Style TargetType="ToggleButton" x:Key="ToggleButtonStyle">
+            <Setter Property="Background" Value="#1E1E24"/>
+            <Setter Property="Foreground" Value="#888899"/>
+            <Setter Property="BorderBrush" Value="#2D2D38"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2A2A36"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF"/>
+                                <Setter Property="Foreground" Value="#00E5FF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Cyberpunk TabControl & TabItem Styling -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#1E1E24"/>
+            <Setter Property="Foreground" Value="#888899"/>
+            <Setter Property="BorderBrush" Value="#2D2D38"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6,6,0,0">
+                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#252530"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#00E5FF"/>
+                                <Setter Property="Foreground" Value="#00E5FF"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#00E5FF"/>
+                                <Setter Property="Foreground" Value="#00E5FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Root Layout Grid hosting background art and application UI -->
+    <Grid>
+        <!-- 1. Background Artwork Image -->
+        <Image x:Name="BackgroundArtwork"
+               Stretch="UniformToFill" 
+               IsHitTestVisible="False"
+               SnapsToDevicePixels="True"/>
+
+        <!-- 2. Lighter Tint Overlay Layer -->
+        <Rectangle Fill="#550C0C10" 
+                   IsHitTestVisible="False"/>
+
+        <!-- 3. Application Content Container -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <!-- Custom Title Bar -->
+                <RowDefinition Height="*"/>
+                <!-- Main Content Area -->
+            </Grid.RowDefinitions>
+
+            <!-- CUSTOM TITLE BAR -->
+            <Border Grid.Row="0" Background="#EE0E0E12" BorderBrush="#282830" BorderThickness="0,0,0,1"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <DockPanel LastChildFill="False">
+                    <!-- App Icon & Title -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0" DockPanel.Dock="Left">
+                        <TextBlock Text="⚡" Foreground="#00E5FF" FontSize="12" Margin="0,0,6,0"/>
+                        <TextBlock Text="CyberGrip 18 Controller" Foreground="#AAAABB" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- Window Control Buttons (Minimize, Close) -->
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                        <Button Content="🗕" Style="{StaticResource WinButtonStyle}" Click="BtnMinimize_Click"/>
+                        <Button Content="✕" Style="{StaticResource CloseButtonStyle}" Click="BtnClose_Click"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- MAIN UI WRAPPER -->
+            <Grid Grid.Row="1" Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Header -->
+                    <RowDefinition Height="*"/>
+                    <!-- Main Tabs Container -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Console Drawer -->
+                </Grid.RowDefinitions>
+
+                <!-- Header Panel with Layer Selector & Console Toggle -->
+                <Border Grid.Row="0" Background="#9918181C" CornerRadius="8" Padding="12" Margin="0,0,0,16" BorderBrush="#353542" BorderThickness="1">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                            <TextBlock Text="CYBERGRIP 18" FontSize="20" FontWeight="Black" Foreground="#00E5FF"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <Ellipse x:Name="ConnectionStatusDot" Width="10" Height="10" Fill="#FF5268" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="TxtConnectionState" Text="DISCONNECTED" Foreground="#FF5268" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock x:Name="TxtStatus" Text="Status: Disconnected" Foreground="#888899" FontSize="11" Margin="0,1,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="10,5" VerticalAlignment="Center">
+                            <Button x:Name="BtnSaveProfile" 
+                                    Content="Save Profile" 
+                                    Width="110" Height="28" Style="{StaticResource KeyCapStyle}"
+                                    Margin="0,0,8,0" 
+                                    Click="BtnSaveProfile_Click" />
+
+                            <Button x:Name="BtnLoadProfile" 
+                                    Content="Load Profile" 
+                                    Width="110" Height="28" Style="{StaticResource KeyCapStyle}"
+                                    Margin="0,0,8,0" 
+                                    Click="BtnLoadProfile_Click" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Selected Layer:" VerticalAlignment="Center" Foreground="#AAAABB" Margin="0,0,8,0" FontWeight="Bold"/>
+                            <ComboBox x:Name="CmbLayer" Width="100" Height="32" Margin="0,0,12,0" 
+                                      Background="#1E1E24" Foreground="#FFFFFF" BorderBrush="#00B8D4"
+                                      FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"
+                                      SelectionChanged="CmbLayer_SelectionChanged" IsEnabled="False">
+                                <ComboBox.Template>
+                                    <ControlTemplate TargetType="ComboBox">
+                                        <Grid>
+                                            <Border x:Name="ComboBorder" Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="4"/>
+                                            <ContentPresenter Margin="9,0,30,0" VerticalAlignment="Center"
+                                                              HorizontalAlignment="Left" IsHitTestVisible="False"
+                                                              Content="{TemplateBinding SelectionBoxItem}"
+                                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"/>
+                                            <ToggleButton x:Name="DropDownToggle" Width="28" HorizontalAlignment="Right"
+                                                          Focusable="False" ClickMode="Press" Background="Transparent"
+                                                          BorderThickness="0"
+                                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                                <Path Data="M 0 0 L 4 4 L 8 0" Stroke="#FFFFFF" StrokeThickness="1.5"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </ToggleButton>
+                                            <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True"
+                                                   Focusable="False" PopupAnimation="Fade"
+                                                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                                        Background="#1E1E24" BorderBrush="#00B8D4" BorderThickness="1"
+                                                        CornerRadius="4">
+                                                    <ScrollViewer MaxHeight="220" CanContentScroll="True">
+                                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </Popup>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="ComboBorder" Property="Opacity" Value="0.55"/>
+                                            </Trigger>
+                                            <Trigger Property="IsDropDownOpen" Value="True">
+                                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="#00E5FF"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ComboBox.Template>
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Background" Value="#1E1E24"/>
+                                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                                        <Setter Property="FontFamily" Value="Segoe UI"/>
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Padding" Value="8,5"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsHighlighted" Value="True">
+                                                <Setter Property="Background" Value="#00B8D4"/>
+                                                <Setter Property="Foreground" Value="#101820"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#00B8D4"/>
+                                                <Setter Property="Foreground" Value="#101820"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
+                                <ComboBoxItem Content="Layer 0" IsSelected="True"/>
+                                <ComboBoxItem Content="Layer 1"/>
+                                <ComboBoxItem Content="Layer 2"/>
+                                <ComboBoxItem Content="Layer 3"/>
+                            </ComboBox>
+                            <Button x:Name="BtnLayerHelp" Content="Layer Help" Width="86" Height="32"
+                                    Style="{StaticResource KeyCapStyle}" Click="BtnLayerHelp_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Keep the primary controls aligned to the right edge. -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="BtnConnect" Content="Connect &amp; Sync" 
+                                    Width="150" Height="36" Style="{StaticResource KeyCapStyle}" 
+                                    Margin="0,0,8,0"
+                                    Click="BtnConnect_Click"/>
+
+                            <ToggleButton x:Name="BtnToggleConsole" Content="Console" 
+                                          Height="36" Style="{StaticResource ToggleButtonStyle}" 
+                                          Click="BtnToggleConsole_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- MAIN TABS CONTAINER (Programming & Testing) -->
+                <ScrollViewer x:Name="TabsScrollViewer"
+                              Grid.Row="1"
+                              Margin="0,0,0,16"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              CanContentScroll="False">
+                <TabControl x:Name="MainTabs"
+                    SelectionChanged="MainTabs_SelectionChanged">
+                    <!-- PROGRAMMING TAB -->
+                    <TabItem Header=" Programming ">
+                        <Grid Margin="0,8,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="180"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Row="0" Grid.ColumnSpan="5" Margin="4,0,4,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left"
+                                            VerticalAlignment="Center">
+                                    <Button x:Name="BtnCapturePhysicalKey" Content="Select Key on CyberGrip"
+                                            Width="190" Height="30" Style="{StaticResource KeyCapStyle}"
+                                            Click="BtnCapturePhysicalKey_Click"/>
+                                    <Button x:Name="BtnAdvancedVial" Content="Advanced: Vial"
+                                            Width="130" Height="30" Style="{StaticResource KeyCapStyle}"
+                                            Click="BtnAdvancedVial_Click">
+                                        <Button.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Open Vial Web" Click="OpenVialWeb_Click"/>
+                                                <MenuItem Header="Get Vial Desktop" Click="GetVialDesktop_Click"/>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                    </Button>
+                                    <TextBlock x:Name="TxtPhysicalKeyCaptureStatus" Text=""
+                                               Foreground="#888899" FontSize="10" VerticalAlignment="Center"
+                                               Margin="10,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                <Button x:Name="BtnFlashStockFirmware" Content="Flash Stock Firmware"
+                                        Width="160" Height="30" Foreground="#FF5268" Style="{StaticResource KeyCapStyle}"
+                                        Click="BtnFlashStockFirmware_Click"/>
+                                <Button x:Name="BtnFlashFirmwareFromFile" Content="Flash UF2 from File..."
+                                        Width="160" Height="30" Foreground="#FF5268" Style="{StaticResource KeyCapStyle}"
+                                        Click="BtnFlashFirmwareFromFile_Click"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- 1. PINKY FINGER POD -->
+                            <GroupBox Header=" Pinky Finger " Grid.Row="1" Grid.Column="0" Foreground="#00E5FF" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <Grid Margin="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button x:Name="BtnKey00" Tag="0" Click="BtnKey_Click" Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey01" Tag="1" Click="BtnKey_Click" Grid.Row="0" Grid.Column="1" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey02" Tag="2" Click="BtnKey_Click" Grid.Row="1" Grid.Column="1" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey03" Tag="3" Click="BtnKey_Click" Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey04" Tag="4" Click="BtnKey_Click" Grid.Row="3" Grid.Column="1" Style="{StaticResource KeyCapStyle}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- 2. RING FINGER POD -->
+                            <GroupBox Header=" Ring Finger " Grid.Row="1" Grid.Column="1" Foreground="#00E5FF" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <Grid Margin="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button x:Name="BtnKey05" Tag="5" Click="BtnKey_Click" Grid.Row="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey06" Tag="6" Click="BtnKey_Click" Grid.Row="1" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey07" Tag="7" Click="BtnKey_Click" Grid.Row="2" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey08" Tag="8" Click="BtnKey_Click" Grid.Row="3" Style="{StaticResource KeyCapStyle}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- 3. MIDDLE FINGER POD -->
+                            <GroupBox Header=" Middle Finger " Grid.Row="1" Grid.Column="2" Foreground="#00E5FF" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <Grid Margin="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button x:Name="BtnKey09" Tag="9" Click="BtnKey_Click" Grid.Row="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey10" Tag="10" Click="BtnKey_Click" Grid.Row="1" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey11" Tag="11" Click="BtnKey_Click" Grid.Row="2" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey12" Tag="12" Click="BtnKey_Click" Grid.Row="3" Style="{StaticResource KeyCapStyle}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- 4. INDEX FINGER POD -->
+                            <GroupBox Header=" Index Finger " Grid.Row="1" Grid.Column="3" Foreground="#00E5FF" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <Grid Margin="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button x:Name="BtnKey13" Tag="13" Click="BtnKey_Click" Grid.Row="0" Grid.Column="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey14" Tag="14" Click="BtnKey_Click" Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey15" Tag="15" Click="BtnKey_Click" Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey16" Tag="16" Click="BtnKey_Click" Grid.Row="3" Grid.Column="0" Style="{StaticResource KeyCapStyle}"/>
+                                    <Button x:Name="BtnKey17" Tag="17" Click="BtnKey_Click" Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyCapStyle}"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- 5. THUMB CLUSTER -->
+                            <GroupBox Header=" Thumb Cluster " Grid.Row="1" Grid.Column="4" Foreground="#FF4081" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Border Width="110" Height="110" CornerRadius="55" Background="#8818181C" BorderBrush="#7C4DFF" BorderThickness="2" Margin="0,0,0,12">
+                                        <Grid>
+                                            <TextBlock Text="JOYSTICK" Foreground="#777788" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="10"/>
+                                            <Button x:Name="BtnKey18" Tag="18" Click="BtnKey_Click" Style="{StaticResource JoystickStyle}" Width="76" Height="76"/>
+                                        </Grid>
+                                    </Border>
+                                    <TextBlock Text="Analog Stick Push-Click" Foreground="#888899" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
+                                    <TextBlock Text="Axis direction for selected layer" Foreground="#CCCCDD" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,2" TextAlignment="Center" TextWrapping="Wrap"/>
+                                    <CheckBox x:Name="ChkInvertX" Content="Invert X axis" Foreground="#CCCCDD" HorizontalAlignment="Center" IsEnabled="False" Checked="JoystickInvert_Changed" Unchecked="JoystickInvert_Changed"/>
+                                    <CheckBox x:Name="ChkInvertY" Content="Invert Y axis" Foreground="#CCCCDD" HorizontalAlignment="Center" IsEnabled="False" Checked="JoystickInvert_Changed" Unchecked="JoystickInvert_Changed"/>
+                                    <TextBlock x:Name="TxtJoystickSettingsStatus" Text="Stored on keyboard" Foreground="#888899" FontSize="9" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
+
+                    <!-- TESTING TAB -->
+                    <TabItem Header=" Testing ">
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="320"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Direct Microcontroller Matrix Tester Viewport -->
+                            <GroupBox Header=" Direct Microcontroller Matrix Tester " Grid.Column="0" Foreground="#00E5FF" BorderBrush="#353542" Background="#66121216" Margin="4">
+                                <Grid Margin="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="180"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 1. PINKY FINGER POD -->
+                                    <GroupBox Header=" Pinky " Grid.Column="0" Foreground="#00E5FF" BorderBrush="#353542" Background="#44121216" Margin="2">
+                                        <Grid Margin="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Button x:Name="BtnTestKey00" Tag="0" Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey01" Tag="1" Grid.Row="0" Grid.Column="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey02" Tag="2" Grid.Row="1" Grid.Column="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey03" Tag="3" Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey04" Tag="4" Grid.Row="3" Grid.Column="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <!-- 2. RING FINGER POD -->
+                                    <GroupBox Header=" Ring " Grid.Column="1" Foreground="#00E5FF" BorderBrush="#353542" Background="#44121216" Margin="2">
+                                        <Grid Margin="2">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Button x:Name="BtnTestKey05" Tag="5" Grid.Row="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey06" Tag="6" Grid.Row="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey07" Tag="7" Grid.Row="2" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey08" Tag="8" Grid.Row="3" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <!-- 3. MIDDLE FINGER POD -->
+                                    <GroupBox Header=" Middle " Grid.Column="2" Foreground="#00E5FF" BorderBrush="#353542" Background="#44121216" Margin="2">
+                                        <Grid Margin="2">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Button x:Name="BtnTestKey09" Tag="9" Grid.Row="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey10" Tag="10" Grid.Row="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey11" Tag="11" Grid.Row="2" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey12" Tag="12" Grid.Row="3" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <!-- 4. INDEX FINGER POD -->
+                                    <GroupBox Header=" Index " Grid.Column="3" Foreground="#00E5FF" BorderBrush="#353542" Background="#44121216" Margin="2">
+                                        <Grid Margin="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Button x:Name="BtnTestKey13" Tag="13" Grid.Row="0" Grid.Column="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey14" Tag="14" Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey15" Tag="15" Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey16" Tag="16" Grid.Row="3" Grid.Column="0" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                            <Button x:Name="BtnTestKey17" Tag="17" Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyCapStyle}" IsHitTestVisible="False" Focusable="False"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <!-- 5. THUMB CLUSTER -->
+                                    <GroupBox Header=" Thumb " Grid.Column="4" Foreground="#FF4081" BorderBrush="#353542" Background="#44121216" Margin="2">
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Border Width="90" Height="90" CornerRadius="45" Background="#8818181C" BorderBrush="#7C4DFF" BorderThickness="2" Margin="0,0,0,4">
+                                                <Grid>
+                                                    <TextBlock Text="JOY" Foreground="#777788" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="9"/>
+                                                    <Button x:Name="BtnTestKey18" Tag="18" Style="{StaticResource JoystickStyle}" Width="64" Height="64" IsHitTestVisible="False" Focusable="False"/>
+                                                </Grid>
+                                            </Border>
+                                            <TextBlock Text="STICK POSITION" Foreground="#AAAABB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,2"/>
+                                            <Border Width="112" Height="112" CornerRadius="56" Background="#88181820" BorderBrush="#353542" BorderThickness="1">
+                                                <Canvas x:Name="JoystickPad" Width="100" Height="100" ClipToBounds="True">
+                                                    <Ellipse Width="88" Height="88" Canvas.Left="6" Canvas.Top="6" Stroke="#555566" StrokeThickness="1"/>
+                                                    <Line X1="50" Y1="6" X2="50" Y2="94" Stroke="#353542" StrokeThickness="1"/>
+                                                    <Line X1="6" Y1="50" X2="94" Y2="50" Stroke="#353542" StrokeThickness="1"/>
+                                                    <Ellipse x:Name="JoystickPositionDot" Width="12" Height="12" Canvas.Left="44" Canvas.Top="44" Fill="#00E5FF" Stroke="White" StrokeThickness="1"/>
+                                                </Canvas>
+                                            </Border>
+                                            <TextBlock x:Name="TxtJoystickAxes" Text="X: ---   Y: ---" Foreground="#CCCCDD" FontSize="9" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                            <TextBlock x:Name="TxtJoystickTelemetryStatus" Text="Waiting for axis data" Foreground="#888899" FontSize="8" TextWrapping="Wrap" TextAlignment="Center" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- MATRIX RESPONSE RATE TESTER -->
+                            <GroupBox Header=" USB POLLING RATE " Grid.Column="1"
+          Foreground="#FF4081"
+          BorderBrush="#353542"
+          Background="#66121216"
+          Margin="4">
+
+                                <Grid Margin="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Status -->
+                                    <StackPanel Grid.Row="0"
+            HorizontalAlignment="Center"
+            Margin="0,0,0,6">
+
+                                        <TextBlock x:Name="TxtUsbPollingRate"
+               Text="--- Hz"
+               Foreground="#00E5FF"
+               FontSize="30"
+               FontWeight="Black"
+               HorizontalAlignment="Center"/>
+
+                                        <TextBlock x:Name="TxtPollingStatus"
+               Text="READY"
+               Foreground="#888899"
+               FontSize="12"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"
+               Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Duration -->
+                                    <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,6">
+
+                                        <TextBlock Text="Duration:"
+                       Foreground="#AAAABB"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+
+                                        <ComboBox x:Name="CmbPollingDuration"
+                      Width="80"
+                      Height="28"
+                      SelectedIndex="1">
+                                            <ComboBoxItem Content="5 sec"/>
+                                            <ComboBoxItem Content="15 sec"/>
+                                            <ComboBoxItem Content="30 sec"/>
+                                            <ComboBoxItem Content="60 sec"/>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <!-- Main Rate -->
+                                    <StackPanel Grid.Row="2"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,6">
+
+                                        <TextBlock x:Name="TxtPollingRate"
+           Text="---"
+           Foreground="#CCCCDD"
+           FontSize="24"
+           FontWeight="Black"
+           HorizontalAlignment="Center"/>
+
+                                        <TextBlock Text="Matrix Response Rate"
+           Foreground="#777788"
+           FontSize="10"
+           HorizontalAlignment="Center"/>
+
+                                        <TextBlock Text="Successful matrix reads per second"
+           Foreground="#666677"
+           FontSize="9"
+           HorizontalAlignment="Center"
+           Margin="0,3,0,0"/>
+
+                                        <TextBlock x:Name="TxtMatrixTheoreticalMax"
+           Text="Request/response theoretical max: --- reads/s"
+           Foreground="#777788"
+           FontSize="9"
+           HorizontalAlignment="Center"
+           Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Statistics -->
+                                    <Grid Grid.Row="3" Margin="0,0,0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Average Interval"
+                           Foreground="#777788"
+                           FontSize="10"
+                           HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtPollingAverage"
+                           Text="--- ms"
+                           Foreground="#CCCCDD"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Samples"
+                           Foreground="#777788"
+                           FontSize="10"
+                           HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtPollingSamples"
+                           Text="0"
+                           Foreground="#CCCCDD"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Min / Max / Errors -->
+                                    <Grid Grid.Row="4" VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                           Text="Minimum"
+                           Foreground="#777788"
+                           FontSize="10"
+                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1"
+                           Text="Maximum"
+                           Foreground="#777788"
+                           FontSize="10"
+                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="2"
+                           Text="99th Percentile"
+                           Foreground="#777788"
+                           FontSize="9"
+                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="3"
+                           Text="Failed Reads"
+                           Foreground="#777788"
+                           FontSize="10"
+                           HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1">
+                                            <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock x:Name="TxtPollingMinimum"
+                           Grid.Column="0"
+                           Text="--- ms"
+                           Foreground="#CCCCDD"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock x:Name="TxtPollingMaximum"
+                           Grid.Column="1"
+                           Text="--- ms"
+                           Foreground="#CCCCDD"
+                           FontSize="13"
+                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock x:Name="TxtPollingP99"
+                           Grid.Column="2"
+                           Text="--- ms"
+                           Foreground="#CCCCDD"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                                            <TextBlock x:Name="TxtPollingFailures"
+                           Grid.Column="3"
+                                           Text="0"
+                                           Foreground="#FF6688"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Grid>
+                                    <Border Grid.Row="5"
+                                            Height="Auto"
+        Background="#33181820"
+        BorderBrush="#353542"
+        BorderThickness="1"
+        CornerRadius="4"
+        Padding="8"
+        Margin="0,4,0,4">
+
+                                        <TextBlock Text="The matrix test measures complete USB request and response cycles. Its measured rate is separate from the USB polling interval reported above."
+                                                   Foreground="#888899"
+                                                   FontSize="9"
+                                                   TextWrapping="Wrap"
+                                                   TextAlignment="Center"/>
+                                    </Border>
+                                    <!-- Start / Stop -->
+                                    <Button x:Name="BtnPollingTest"
+                Grid.Row="6"
+                Content="START TEST"
+                Height="32"
+                Style="{StaticResource KeyCapStyle}"
+                Click="BtnPollingTest_Click"
+                Margin="0,4,0,0"/>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+                </ScrollViewer>
+
+                <!-- Console Drawer -->
+                <Border x:Name="ConsolePanel" Grid.Row="2" Visibility="Collapsed" Height="160" Background="#990A0A0C" CornerRadius="8" Padding="8" BorderBrush="#353542" BorderThickness="1">
+                    <DockPanel>
+                        <TextBlock Text="DEBUG CONSOLE" DockPanel.Dock="Top" Foreground="#555566" FontSize="10" FontWeight="Bold" Margin="4,0,0,4"/>
+                        <TextBox x:Name="TxtLog" Background="Transparent" Foreground="#00FF66" BorderThickness="0" 
+                                 FontFamily="Consolas" FontSize="11" IsReadOnly="True" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"
+                                 TextChanged="TxtLog_TextChanged"/>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

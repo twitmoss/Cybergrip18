@@ -1,0 +1,109 @@
+﻿<Window x:Class="CyberGrip.KeyCaptureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Assign Key" Height="420" Width="480"
+        Background="#18181C" Foreground="#E0E0E0"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Focusable="True">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock x:Name="TxtHeader" Text="Assign Key" 
+                   FontSize="16" FontWeight="Bold" Foreground="#00E5FF" Margin="0,0,0,12"/>
+
+        <!-- Main Tab Area -->
+        <TabControl x:Name="MainTabControl" Grid.Row="1" Background="#1E1E24" BorderBrush="#2D2D38" SelectionChanged="MainTabControl_SelectionChanged">
+
+            <!-- TAB 1: Physical Key Capture + Modifiers -->
+            <TabItem Header="Physical Key" Background="#18181C" Foreground="#00E5FF">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Active Display Box -->
+                    <Border Grid.Row="0" Background="#121214" BorderBrush="#2D2D38" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Captured Keycode:" Foreground="#888899" FontSize="11" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtDetectedKey" Text="Press key combo on keyboard..." Foreground="#00E5FF" FontWeight="Bold" FontSize="18" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Active Modifiers Indicators -->
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                        <TextBlock Text="Active Keyboard Modifiers:" Foreground="#AAAABB" Margin="0,0,0,8" FontSize="12"/>
+                        <WrapPanel HorizontalAlignment="Center">
+                            <CheckBox x:Name="ChkShift" Content="Shift" Foreground="#E0E0E0" Margin="8,4" Checked="ManualModifier_Changed" Unchecked="ManualModifier_Changed"/>
+                            <CheckBox x:Name="ChkCtrl" Content="Ctrl" Foreground="#E0E0E0" Margin="8,4" Checked="ManualModifier_Changed" Unchecked="ManualModifier_Changed"/>
+                            <CheckBox x:Name="ChkAlt" Content="Alt" Foreground="#E0E0E0" Margin="8,4" Checked="ManualModifier_Changed" Unchecked="ManualModifier_Changed"/>
+                            <CheckBox x:Name="ChkGui" Content="Win / GUI" Foreground="#E0E0E0" Margin="8,4" Checked="ManualModifier_Changed" Unchecked="ManualModifier_Changed"/>
+                        </WrapPanel>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" Text="Press any key or combo (e.g. Shift+1, Ctrl+A, or Shift alone)." Foreground="#666677" FontSize="11" HorizontalAlignment="Center"/>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: VIA Layer Functions -->
+            <TabItem Header="VIA Layers" Background="#18181C" Foreground="#00E5FF">
+                <StackPanel Margin="12,24,12,12">
+                    <TextBlock Text="Layer Mode:" Foreground="#AAAABB" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="CmbLayerMode" Height="30" Background="#121214" Foreground="#00E5FF" 
+                              SelectionChanged="LayerSelection_Changed">
+                        <ComboBoxItem Content="MO - Momentary (Hold)" IsSelected="True"/>
+                        <ComboBoxItem Content="TG - Toggle On/Off"/>
+                        <ComboBoxItem Content="TO - Turn On (Clear Others)"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Target Layer:" Foreground="#AAAABB" Margin="0,16,0,4"/>
+                    <ComboBox x:Name="CmbTargetLayer" Height="30" Background="#121214" Foreground="#00E5FF" 
+                              SelectionChanged="LayerSelection_Changed">
+                        <ComboBoxItem Content="Layer 1" IsSelected="True"/>
+                        <ComboBoxItem Content="Layer 2"/>
+                        <ComboBoxItem Content="Layer 3"/>
+                    </ComboBox>
+                </StackPanel>
+            </TabItem>
+
+            <!-- TAB 3: Media Keys -->
+            <TabItem Header="Media &amp; Audio" Background="#18181C" Foreground="#00E5FF">
+                <StackPanel Margin="12,24,12,12">
+                    <TextBlock Text="Select Media Action:" Foreground="#AAAABB" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="CmbMediaAction" Height="30" Background="#121214" Foreground="#00E5FF" 
+                              SelectionChanged="MediaSelection_Changed">
+                        <ComboBoxItem Content="Mute Volume" IsSelected="True"/>
+                        <ComboBoxItem Content="Volume Up"/>
+                        <ComboBoxItem Content="Volume Down"/>
+                        <ComboBoxItem Content="Play / Pause"/>
+                        <ComboBoxItem Content="Next Track"/>
+                        <ComboBoxItem Content="Previous Track"/>
+                    </ComboBox>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <!-- Footer Bar -->
+        <Grid Grid.Row="2" Margin="0,12,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Content="Clear Key" Width="90" Height="32" Margin="0,0,8,0" HorizontalAlignment="Left"
+                        Click="BtnClear_Click" Background="#3A1A1A" Foreground="#FF5252" BorderBrush="#FF1744"/>
+                <Button Content="Transparent Key" Width="90" Height="32" HorizontalAlignment="Left"
+                        Click="BtnSetTransparent_Click" Background="#3A1A1A" Foreground="#FF5252" BorderBrush="#FF1744"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Accept" Width="90" Height="32" Margin="0,0,8,0"
+                        Click="BtnAccept_Click" Background="#1B3A2B" Foreground="#00E676" BorderBrush="#00C853" FontWeight="Bold"/>
+                <Button Content="Cancel" Width="80" Height="32" 
+                        Click="BtnCancel_Click" Background="#2D2D38" Foreground="#E0E0E0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
